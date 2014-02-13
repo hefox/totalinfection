@@ -1,0 +1,9 @@
+canvas {
+  float: left;
+  width: 49%;
+}
+
+#qunit-wrapper {
+  float: right;
+  width: 49%;
+}

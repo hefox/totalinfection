@@ -7,7 +7,7 @@ var Users = [];
  * @param id
  *   a unique ID for this user.
  */
-var User = function (id) {
+var User = function (id, visual) {
   // We keep track of both directions so that searching is easier.
   // This doubles the storage requirements, but performance matters more.
   this.mentors = [];
@@ -24,6 +24,10 @@ var User = function (id) {
     Users[id] = this; 
   }
   this.id = id;
+  this.visual = visual;
+  if (visual && visual.draw) {
+    visual.draw(this);
+  }
 };
 
 
@@ -47,7 +51,7 @@ User.prototype.hasMentor = function(mentor) {
  */
 User.prototype.addMentor = function(mentor) {
   if (mentor == this) {
-    throw "self mentoring not allowed."
+    throw "self mentoring not allowed.";
   }
   this.mentors[mentor.id] = mentor;
   if (!mentor.hasMentee(this)) {
@@ -60,11 +64,14 @@ User.prototype.addMentor = function(mentor) {
  */
 User.prototype.addMentee = function(mentee) {
   if (mentee == this) {
-    throw "self mentoring not allowed."
+    throw "self mentoring not allowed.";
   }
   this.mentees[mentee.id] = mentee;
   if (!mentee.hasMentor(this)) {
     mentee.addMentor(this);
+  }
+  if (this.visual && this.visual.drawBetween && mentee.visual) {
+    this.visual.drawBetween(mentee.visual);
   }
 };
 
@@ -86,4 +93,27 @@ User.prototype.removeMentee = function(mentee) {
   if (mentee.hasMentor(this)) {
     mentee.removeMentor(this);
   }
+};
+
+
+/**
+ * Finds all mentees
+ */
+User.prototype.findConnected = function(connected) {
+  if (connected === undefined) {
+    connected = [];
+  }
+  for (k in this.mentees) {
+    if (!(k in connected)) {
+      connected[k] = this.mentees[k];
+      this.mentees[k].findConnected(connected)
+    }
+  }
+  for (k in this.mentors) {
+    if (!(k in connected)) {
+      connected[k] = this.mentors[k];
+      this.mentors[k].findConnected(connected)
+    }
+  }
+  return connected;
 };

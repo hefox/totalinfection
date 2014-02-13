@@ -30,7 +30,7 @@ var User = function (id) {
 /**
  * Returns whether this user mentors given user.
  */
-User.prototype.hasMantee = function(mentee) {
+User.prototype.hasMentee = function(mentee) {
   return mentee.id in this.mentees;
 };
 
@@ -46,8 +46,11 @@ User.prototype.hasMentor = function(mentor) {
  * Add a mentor to this user.
  */
 User.prototype.addMentor = function(mentor) {
+  if (mentor == this) {
+    throw "self mentoring not allowed."
+  }
   this.mentors[mentor.id] = mentor;
-  if (!mentor.hasMantee(this)) {
+  if (!mentor.hasMentee(this)) {
     mentor.addMentee(this);
   }
 };
@@ -56,6 +59,9 @@ User.prototype.addMentor = function(mentor) {
  * Add a mentee to this user.
  */
 User.prototype.addMentee = function(mentee) {
+  if (mentee == this) {
+    throw "self mentoring not allowed."
+  }
   this.mentees[mentee.id] = mentee;
   if (!mentee.hasMentor(this)) {
     mentee.addMentor(this);
@@ -67,7 +73,7 @@ User.prototype.addMentee = function(mentee) {
  */
 User.prototype.removeMentor = function(mentor) {
   delete this.mentors[mentor.id];
-  if (mentor.hasMantee(this)) {
+  if (mentor.hasMentee(this)) {
     mentor.removeMentee(this);
   }
 };

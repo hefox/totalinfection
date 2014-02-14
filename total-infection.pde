@@ -19,8 +19,10 @@ UserDrawable.prototype.draw = function() {
 };
 
 UserDrawable.prototype.drawBetween = function(neighbor) {
-  fill(20, 20, 20);
+  stroke(20, 20, 20);
   line(this.x, this.y, neighbor.x, neighbor.y);
+  stroke(18, 230, 67);
+  line(round((neighbor.x +(neighbor.x + this.x) / 2)) / 2, (neighbor.y + (neighbor.y + this.y) /2) / 2, neighbor.x, neighbor.y);
 };
 
 /**

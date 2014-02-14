@@ -24,6 +24,8 @@ var User = function (id) {
     Users[id] = this; 
   }
   this.id = id;
+  // Track infection status.
+  this.infected = false;
 };
 
 
@@ -62,6 +64,9 @@ User.prototype.addMentee = function(mentee) {
   if (mentee == this) {
     throw "self mentoring not allowed.";
   }
+  if (mentee.infected) {
+    this.increaseInfectedCount();
+  }
   this.mentees[mentee.id] = mentee;
   if (!mentee.hasMentor(this)) {
     mentee.addMentor(this);
@@ -82,6 +87,9 @@ User.prototype.removeMentor = function(mentor) {
  * Remove a mentee from this user.
  */
 User.prototype.removeMentee = function(mentee) {
+  if (mentee.infected) {
+    this.decreaseInfectedCount();
+  }
   delete this.mentees[mentee.id];
   if (mentee.hasMentor(this)) {
     mentee.removeMentor(this);
@@ -110,3 +118,44 @@ User.prototype.findConnected = function(connected) {
   }
   return connected;
 };
+
+
+/**
+ * Mark that a student of this teacher was infected.
+ */
+User.prototype.increaseInfectedCount = function() {
+  this.infectedCount = this.infectedCount || 0;
+  this.infectedCount++;
+}
+/**
+ * Marks that a student cured for this teacher
+ */
+User.prototype.decreaseInfectedCount = function() {
+  if (!this.infectedCount) {
+    throw "Called infected decrease before any mentees were infected";
+  }
+  this.infectedCount--;
+}
+
+/**
+ * Marks that a this user was infected.
+ */
+User.prototype.infect = function() {
+  this.infected = true;
+  // Cache how many students are infected for easier calculations later.
+  for (k in this.mentors) {
+    this.mentors[k].increaseInfectedCount();
+  }
+};
+
+/**
+ * Marks that this user was cured.
+ */
+User.prototype.cure = function() {
+  this.infected = false;
+  // Cache how many students are infected for easier calculations later.
+  for (k in this.mentors) {
+    this.mentors[k].decreaseInfectedCount();
+  }
+};
+

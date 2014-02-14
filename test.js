@@ -129,3 +129,45 @@ test("connected functions", function() {
   testUserConnected();
   user_test_tear();
 });
+
+
+test("infected functions", function() {
+  user_test_setup();
+  var user = new User('unique id');
+  var user2 = new User('unique id 2');
+  var user3 = new User('unique id 3');
+  var user4 = new User('unique id 4');
+  var user5 = new User('unique id 5');
+  var user6 = new User('unique id 6');
+  var user7 = new User('unique id 7');
+
+  user.infect();
+  ok(user.infected, "User is infected.");
+
+  user.cure();
+  ok(!user.infected, "User is cured.");
+
+  user.addMentee(user2);
+
+  user2.infect();
+  ok(user2.infected, "User2 is infected.");
+  ok(!user.infected, "User is not infected.");
+  ok(user.infectedCount == 1, "User infected student count correct.");
+
+  user3.infect();
+  ok(user3.infected, "User3 is infected.");
+
+  // Verify adding an infected student increass count.
+  user.addMentee(user3);
+  ok(user.infectedCount == 2, "User infected student count correct.");
+
+  // Verify removing infection decreases count.
+  user3.cure();
+  ok(user.infectedCount == 1, "User infected student count correct.");
+
+  // Make sure removing an infected student decreased the count.
+  user.removeMentee(user2);
+  ok(user.infectedCount == 0, "User infected student count correct.");
+
+  user_test_tear();
+});

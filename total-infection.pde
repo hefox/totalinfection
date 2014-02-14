@@ -1,8 +1,9 @@
+PImage student, teacher, infected, alone;
+
 var UserDrawable = function (id, x, y) {
   User.call(this, id);
   this.x  = x;
   this.y = y;
-  this.draw();
 };
 UserDrawable.prototype = Object.create(User.prototype);
 
@@ -10,8 +11,20 @@ UserDrawable.prototype = Object.create(User.prototype);
  * Returns whether this user mentors given user.
  */
 UserDrawable.prototype.draw = function() {
-  fill(0);
-  rect(this.x, this.y, 10, 10);
+  // Place the user graphic based on status.
+  if (this.infected) {
+    image(infected, this.x, this.y);
+  }
+  else if (this.mentees.size()) {
+    image(teacher, this.x, this.y);
+  }
+  else if (this.mentors.size()) {
+    image(student, this.x, this.y);
+  }
+  else {
+    image(alone, this.x, this.y);
+  }
+
   if (this.id) {
     fill(18, 230, 67);
     text(this.id, this.x, this.y);
@@ -34,9 +47,14 @@ UserDrawable.prototype.addMentee = function(mentee) {
 };
 
 void setup() {
+
   size(600, 600);
-  fill(0);
   frameRate(60);
+  // Initialize these hear so not repeated.
+  student = loadImage("images/student.png");
+  teacher = loadImage("images/teacher.png");
+  infected = loadImage("images/infected.png");
+  alone = loadImage("images/alone.png");
   var x = 100, y = 100;
   for (var i = 1; i < 26; i++) {
     new UserDrawable("u" + i.toString(), x, y);
@@ -46,11 +64,14 @@ void setup() {
       y += 100;
     }
   }
-}
-
-void draw() {
   Users['u1'].addMentee(Users['u2']);
   Users['u1'].addMentee(Users['u6']);
   Users['u2'].addMentee(Users['u7']);
   Users['u2'].addMentee(Users['u8']);
+}
+
+void draw() {
+  for (x in Users) {
+    Users[x].draw();
+  }
 }

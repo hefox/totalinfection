@@ -1,5 +1,53 @@
+/**
+ * A container of several users. Made for helper functions like size.
+ */
+var UsersContainer = function () {};
+
+/**
+ * Returns how many users are in this container.
+ */
+Object.defineProperty(UsersContainer.prototype, 'size', {
+  enumerable: false,
+  value: function() {
+    var size = 0, key;
+    for (key in this) {
+      if (this.hasOwnProperty(key)) {
+        size++;
+      }
+    }
+    return size;
+  }
+});
+
+/**
+ * Add a new user to the container, generating a new key.
+ */
+Object.defineProperty(UsersContainer.prototype, 'add', {
+  enumerable: false,
+  value: function(user) {
+    var i = 0;
+    while (i in this) {
+      i++;
+    }
+    this[i] = user;
+    return i;
+  }
+});
+
+/**
+ * Add a new user to the container, generating a new key.
+ */
+Object.defineProperty(UsersContainer.prototype, 'findId', {
+  enumerable: false,
+  value: function(user) {
+    for (var k in this) {
+      if (this[k] === user) return k;
+    }
+  }
+});
+
 // Keeps track of unique users.
-var Users = [];
+var Users = new UsersContainer();
 
 /**
  * Defines the User object that tracks a user and it's mentors/mentees.
@@ -10,12 +58,12 @@ var Users = [];
 var User = function (id) {
   // We keep track of both directions so that searching is easier.
   // This doubles the storage requirements, but performance matters more.
-  this.mentors = [];
-  this.mentees = [];
-  // If ID was not supplied, use the index after pushing the user to Users.
+  this.mentors = new UsersContainer();
+  this.mentees = new UsersContainer();
+  // If ID was not supplied, use the index after adding the user to Users.
   if (!id) {
-    Users.push(this);
-    id = Users.indexOf(this);
+    Users.add(this);
+    id = Users.findId(this);
   }
   else if (id in Users) {
     throw "ID already in use.";
@@ -27,7 +75,6 @@ var User = function (id) {
   // Track infection status.
   this.infected = false;
 };
-
 
 /**
  * Returns whether this user mentors given user.
@@ -102,7 +149,7 @@ User.prototype.removeMentee = function(mentee) {
  */
 User.prototype.findConnected = function(connected) {
   if (connected === undefined) {
-    connected = [];
+    connected = new UsersContainer();
   }
   for (k in this.mentees) {
     if (!(k in connected)) {

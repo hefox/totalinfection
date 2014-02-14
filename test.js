@@ -1,7 +1,7 @@
 var Users_save;
 function user_test_setup() {
   Users_save = Users;
-  Users = [];
+  Users = new UsersContainer();
 }
 function user_test_tear() {
   Users = Users_save;
@@ -9,6 +9,7 @@ function user_test_tear() {
 
 test("user test", function() {
   user_test_setup();
+  ok(Users.size() == 0, "Size of users correct.");
   var user = new User('unique id');
 
   // Test that user was added to Users array correctly.
@@ -20,9 +21,10 @@ test("user test", function() {
 
   // Test that new user given a id if not supplied.
   var user2 = new User();
-  ok(Users.indexOf(user2) === user2.id && user2.id === 0, "User given new ID " + user2.id + " and added.");
+  ok(Users.findId(user2) === user2.id, "User given new ID " + user2.id + " and added.");
   var user3 = new User();
-  ok(Users.indexOf(user3) === user3.id && user3.id === 1, "User given new ID " + user3.id + " and added.");
+  ok(Users.findId(user3) === user3.id, "User given new ID " + user3.id + " and added.");
+  ok(Users.size() == 3, "Size of users correct.");
   user_test_tear();
 });
 

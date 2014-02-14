@@ -7,7 +7,7 @@ var Users = [];
  * @param id
  *   a unique ID for this user.
  */
-var User = function (id, visual) {
+var User = function (id) {
   // We keep track of both directions so that searching is easier.
   // This doubles the storage requirements, but performance matters more.
   this.mentors = [];
@@ -24,10 +24,6 @@ var User = function (id, visual) {
     Users[id] = this; 
   }
   this.id = id;
-  this.visual = visual;
-  if (visual && visual.draw) {
-    visual.draw(this);
-  }
 };
 
 
@@ -69,9 +65,6 @@ User.prototype.addMentee = function(mentee) {
   this.mentees[mentee.id] = mentee;
   if (!mentee.hasMentor(this)) {
     mentee.addMentor(this);
-  }
-  if (this.visual && this.visual.drawBetween && mentee.visual) {
-    this.visual.drawBetween(mentee.visual);
   }
 };
 

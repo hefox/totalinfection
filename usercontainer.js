@@ -69,12 +69,11 @@ Object.defineProperty(UsersContainer.prototype, 'infect', {
     if (mode == 'connected') {
       var infect_users = user.findConnected();
       for (k in infect_users) {
-        infect_users[k].infect();
+        if (!infect_users[k].infected) infect_users[k].infect();
       }
     }
     else {
       if (typeof mode !== 'number' || mode % 1 != 0) {
-        console.log(typeof mode);
         throw "We were given a non-int for infected count. That sucks.";
       }
       else if (mode < 0) {
@@ -89,7 +88,7 @@ Object.defineProperty(UsersContainer.prototype, 'infect', {
       user.infect();
       var infection_count = 1;
       for (i in user.mentees) {
-        user.mentees[i].infect();
+        if (!user.mentees[i].infected) user.mentees[i].infect();
         infection_count++;
       }
 
@@ -102,27 +101,33 @@ Object.defineProperty(UsersContainer.prototype, 'infect', {
         // First the couch with the greatest infected users.
         for (i in this) {
           // Test if infected count less then current max found and that there
-          // is still students to infect.
-          if (this[i].infectedCount && this[i].infectedCount > max_infected_count && this[i].infectedCount < this[i].mentees.size()) {
+          // is still students or mentor itself to infect.
+          if (this[i].infectedCount && this[i].infectedCount > max_infected_count && (this[i].infectedCount < this[i].mentees.size() || !this[i].infected)) {
             max_infected_count = this[i].infectedCount;
             infected_user = this[i];
           }
         }
 
         // Infect the max infected if exists.
-        if (!infected_user) {
+        if (!max_infected_count) {
           do {
             infected_user = this.randomUser();
           }
           while(infected_user.infected);
+        }
+
+        // Infect the teacher, who may or may not be infected at this stage.
+        if (!infected_user.infected) {
           infected_user.infect();
           infection_count++;
         }
 
-        // Infect all this users students.
+        // Infect all this teacher's students if not infected yet..
         for (i in infected_user.mentees) {
-          infected_user.mentees[i].infect();
-          infection_count++;
+          if (!infected_user.mentees[i].infected) {
+            infected_user.mentees[i].infect();
+            infection_count++;
+          }
         }
 
       }

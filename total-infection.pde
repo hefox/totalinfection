@@ -51,7 +51,7 @@ UserDrawable.prototype.addMentee = function(mentee) {
 
 void setup() {
   size(600, 600);
-  frameRate(60);
+  frameRate(10);
   // Initialize these hear so not repeated.
   student = loadImage("images/student.png");
   teacher = loadImage("images/teacher.png");
@@ -70,7 +70,8 @@ void setup() {
   Users['u1'].addMentee(Users['u6']);
     Users['u2'].addMentee(Users['u7']);
     Users['u2'].addMentee(Users['u8']);
-      Users['u8'].addMentee(Users['u3']);
+      Users['u3'].addMentee(Users['u8']);
+      Users['u3'].addMentee(Users['u4']);
 
   Users['u25'].addMentee(Users['u24']);
     Users['u24'].addMentee(Users['u18']);

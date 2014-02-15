@@ -141,6 +141,9 @@ User.prototype.decreaseInfectedCount = function() {
  * Marks that a this user was infected.
  */
 User.prototype.infect = function() {
+  if (this.infected) {
+    throw "User is already infected";
+  }
   this.infected = true;
   // Cache how many students are infected for easier calculations later.
   for (k in this.mentors) {

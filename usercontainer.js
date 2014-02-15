@@ -35,7 +35,7 @@ Object.defineProperty(UsersContainer.prototype, 'add', {
 });
 
 /**
- * Add a new user to the container, generating a new key.
+ * Find the id/key of a user in container.
  */
 Object.defineProperty(UsersContainer.prototype, 'findId', {
   enumerable: false,
@@ -46,6 +46,9 @@ Object.defineProperty(UsersContainer.prototype, 'findId', {
   }
 });
 
+/**
+ * Return a random user.
+ */
 Object.defineProperty(UsersContainer.prototype, 'randomUser', {
   enumerable: false,
   value: function(user) {
@@ -58,7 +61,13 @@ Object.defineProperty(UsersContainer.prototype, 'randomUser', {
 
 
 /**
- * Add a new user to the container, generating a new key.
+ * Infect a user
+ *
+ * @param user
+ *  The user to infect
+ * @param mode
+ *   The mode to run into -- use "connected" for all connected, specificy a
+ *   number for running a partial infection.
  */
 Object.defineProperty(UsersContainer.prototype, 'infect', {
   enumerable: false,
@@ -136,7 +145,7 @@ Object.defineProperty(UsersContainer.prototype, 'infect', {
 });
 
 /**
- * Add a new user to the container, generating a new key.
+ * Remove infections from all users.
  */
 Object.defineProperty(UsersContainer.prototype, 'cure', {
   enumerable: false,

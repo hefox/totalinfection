@@ -105,3 +105,22 @@ void draw() {
     Users[x].draw();
   }
 }
+
+/**
+ * I'm not using this functions, but here as example of how to run the two
+ * Infection modes.
+ */
+
+/**
+ * Run total infections
+ */
+function total_infection(user) {
+  Users.infect(user);
+}
+
+/**
+ * Run partial infections
+ */
+function limited_infection(user, num) {
+  Users.infect(user, num);
+}

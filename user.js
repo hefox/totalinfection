@@ -97,12 +97,13 @@ User.prototype.removeMentee = function(mentee) {
 
 
 /**
- * Finds all mentees
+ * Finds all connected users (mentees/mentors/etc.).
  */
 User.prototype.findConnected = function(connected) {
   if (connected === undefined) {
     connected = new UsersContainer();
   }
+  connected[this.id] = this; 
   for (k in this.mentees) {
     if (!(k in connected)) {
       connected[k] = this.mentees[k];

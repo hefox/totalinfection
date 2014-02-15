@@ -26,7 +26,6 @@ UserDrawable.prototype.draw = function() {
   }
 
   if (this.id) {
-    fill(18, 230, 67);
     text(this.id, this.x, this.y);
   }
 };
@@ -38,6 +37,10 @@ UserDrawable.prototype.drawBetween = function(neighbor) {
   line(round((neighbor.x +(neighbor.x + this.x) / 2)) / 2, (neighbor.y + (neighbor.y + this.y) /2) / 2, neighbor.x, neighbor.y);
 };
 
+UserDrawable.prototype.clicked = function(x, y) {
+  return x >= this.x && x <= this.x + 20 && y >= this.y && y <= this.y + 20;
+};
+
 /**
  * Add a mentee to this user.
  */
@@ -47,7 +50,6 @@ UserDrawable.prototype.addMentee = function(mentee) {
 };
 
 void setup() {
-
   size(600, 600);
   frameRate(60);
   // Initialize these hear so not repeated.
@@ -66,12 +68,39 @@ void setup() {
   }
   Users['u1'].addMentee(Users['u2']);
   Users['u1'].addMentee(Users['u6']);
-  Users['u2'].addMentee(Users['u7']);
-  Users['u2'].addMentee(Users['u8']);
+    Users['u2'].addMentee(Users['u7']);
+    Users['u2'].addMentee(Users['u8']);
+      Users['u8'].addMentee(Users['u3']);
+
+  Users['u25'].addMentee(Users['u24']);
+    Users['u24'].addMentee(Users['u18']);
+    Users['u24'].addMentee(Users['u19']);
+    Users['u24'].addMentee(Users['u20']);
+      Users['u19'].addMentee(Users['u14']);
+      Users['u19'].addMentee(Users['u15']);
+
+
+  Users['u11'].addMentee(Users['u12']);
+  Users['u11'].addMentee(Users['u17']);
+  Users['u11'].addMentee(Users['u22']);
+    Users['u12'].addMentee(Users['u9']);
+    Users['u12'].addMentee(Users['u10']);
+      Users['u10'].addMentee(Users['u5']);
+      Users['u10'].addMentee(Users['u4']);
 }
 
 void draw() {
+  var mode = document.getElementById("infect-amount").value;
+  if (mode != "connected") {
+    mode = parseInt(mode);
+  }
   for (x in Users) {
+    if(mousePressed) {
+      if (Users[x].clicked(mouseX, mouseY)) {
+        Users.infect(Users[x], mode);
+        break;
+      }
+    }
     Users[x].draw();
   }
 }

@@ -87,6 +87,7 @@ test("connected functions", function() {
   var user5 = new User('unique id 5');
   var user6 = new User('unique id 6');
   var user7 = new User('unique id 7');
+  var user8 = new User('unique id 8');
 
   user.addMentee(user2);
   ok(user.hasMentee(user2), "User has mentee.");
@@ -129,6 +130,10 @@ test("connected functions", function() {
   user4.addMentee(user5);
   user.addMentor(user2);
   testUserConnected();
+
+  // Verify that a lonely user is connected with themselves.
+  var user8_connected = user8.findConnected();
+  ok(user8.id in user8_connected, "User is connected.");
   user_test_tear();
 });
 

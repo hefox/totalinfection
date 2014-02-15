@@ -178,3 +178,78 @@ test("infected functions", function() {
 
   user_test_tear();
 });
+
+
+test("infected modes", function() {
+  user_test_setup();
+  var user = new User('unique id');
+  var user2 = new User('unique id 2');
+  var user3 = new User('unique id 3');
+  var user4 = new User('unique id 4');
+  var user5 = new User('unique id 5');
+  var user6 = new User('unique id 6');
+  var user7 = new User('unique id 7');
+  var user8 = new User('unique id 8');
+
+
+  user.addMentee(user2);
+  user2.addMentee(user3);
+  user.addMentee(user4);
+  user3.addMentee(user5);
+
+  // Add a connection that not part of above.
+  user6.addMentee(user7);
+
+  // Infect user3 and all it's connections.
+  Users.infect(user3);
+  ok(user.infected, "User is infected.");
+  ok(user2.infected, "User is infected.");
+  ok(user3.infected, "User is infected.");
+  ok(user4.infected, "User is infected.");
+  ok(user5.infected, "User is infected.");
+  ok(!user6.infected, "User is not infected.");
+  ok(!user7.infected, "User is not infected.");
+  Users.cure();
+
+  Users.infect(user6);
+  ok(user6.infected, "User is infected.");
+  ok(user7.infected, "User is infected.");
+  ok(!user.infected, "User is not infected.");
+  Users.cure();
+
+  // Only user and it's student are infected
+  Users.infect(user, 1);
+  ok(user.infected, "User is infected.");
+  ok(user2.infected, "User is infected.");
+  ok(!user3.infected, "User is not infected.");
+  ok(user4.infected, "User is infected.");
+  ok(!user5.infected, "User is not infected.");
+  ok(!user6.infected, "User is not infected.");
+  ok(!user7.infected, "User is not infected.");
+
+  // Only user and it's student are infected again
+  Users.infect(user, 3);
+  ok(user.infected, "User is infected.");
+  ok(user2.infected, "User is infected.");
+  ok(!user3.infected, "User is not infected.");
+  ok(user4.infected, "User is infected.");
+  ok(!user5.infected, "User is not infected.");
+  ok(!user6.infected, "User is not infected.");
+  ok(!user7.infected, "User is not infected.");
+
+  // user, it's mentees, and user2's are infected.
+  // Becuase user2 has most infected users due to addition below.
+  user2.addMentee(user4);
+  user2.addMentee(user8);
+  Users.infect(user, 4);
+  ok(user.infected, "User is infected.");
+  ok(user2.infected, "User is infected.");
+  ok(user3.infected, "User is infected.");
+  ok(user4.infected, "User is infected.");
+  ok(!user5.infected, "User is not infected.");
+  ok(user8.infected, "User is infected.");
+  ok(!user6.infected, "User is not infected.");
+  ok(!user7.infected, "User is not infected.");
+
+  user_test_tear();
+});

@@ -66,7 +66,7 @@ Object.defineProperty(UsersContainer.prototype, 'infect', {
     if (this.findId(user) === undefined) {
       throw "User must be part of this container.";
     }
-    if (mode == 'connected') {
+    if (!mode || mode == 'connected') {
       var infect_users = user.findConnected();
       for (k in infect_users) {
         if (!infect_users[k].infected) infect_users[k].infect();
